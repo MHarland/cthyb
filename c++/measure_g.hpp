@@ -58,7 +58,7 @@ struct measure_g {
   foreach(data.dets[a_level], [this, corr, s](std::pair<time_pt, int> const& x, std::pair<time_pt, int> const& y, double M) {
    // beta-periodicity is implicit in the argument, just fix the sign properly
    this->g_tau[closest_mesh_pt(double(y.first - x.first))](y.second, x.second) +=
-       (y.first >= x.first ? real(s) : -real(s)) * M * corr;
+       (y.first >= x.first ? real(s) : -real(s)) * M * corr / data.importance[a_level];
   });
  }
  // ---------------------------------------------

@@ -34,6 +34,7 @@ class move_insert_c_cdag {
  std::map<std::string, statistics::histogram_segment_bin> histos; // Analysis histograms
  double delta_tau;
  qmc_data::trace_t new_trace;
+ double new_importance;
  time_pt tau1, tau2;
  op_desc op1, op2;
 
@@ -136,7 +137,14 @@ class move_insert_c_cdag {
   auto trace_ratio = new_trace / data.trace;
   if (!std::isfinite(trace_ratio)) TRIQS_RUNTIME_ERROR << "trace_ratio not finite" << new_trace << "  "<< data.trace<<"  "<< new_trace /data.trace ;
 
-  mc_weight_type p = trace_ratio * det_ratio;
+  // Calculate importance
+  //new_importance = 1.0/(1.0 + det.size() + 1.0);
+  new_importance = 1.0;
+
+  auto importance_ratio = new_importance / data.importance[block_index];
+  new_importance = data.importance[block_index] * importance_ratio;
+
+  mc_weight_type p = importance_ratio * trace_ratio * det_ratio;
 
 #ifdef EXT_DEBUG
   std::cerr << "Trace ratio: " << trace_ratio << '\t';
@@ -166,6 +174,9 @@ class move_insert_c_cdag {
   data.update_sign();
   data.trace = new_trace;
   if (record_histograms) histos["length_accepted"] << delta_tau;
+
+  // update importance
+  data.importance[block_index] = new_importance;
 
 #ifdef EXT_DEBUG
   std::cerr << "* Configuration after: " << std::endl;
