@@ -32,6 +32,7 @@ class move_remove_c_cdag {
  mc_tools::random_generator& rng;
  int block_index, block_size;
  qmc_data::trace_t new_trace;
+ double new_importance;
  time_pt tau1, tau2;
 
  public:
@@ -86,7 +87,14 @@ class move_remove_c_cdag {
   auto trace_ratio = new_trace / data.trace;
   if (!std::isfinite(trace_ratio)) TRIQS_RUNTIME_ERROR << "trace_ratio not finite" << new_trace << "  "<< data.trace<<"  "<< new_trace /data.trace ;
  
-  mc_weight_type p = trace_ratio * det_ratio;
+  // Calculate importance
+  //new_importance = 1.0/(1.0 + det.size() - 1.0);
+  new_importance = 1.0;
+
+  auto importance_ratio = new_importance / data.importance[block_index];
+  new_importance = data.importance[block_index] * importance_ratio;
+
+  mc_weight_type p = importance_ratio * trace_ratio * det_ratio;
 
 #ifdef EXT_DEBUG
   std::cerr << "Trace ratio: " << trace_ratio << '\t';
@@ -115,6 +123,10 @@ class move_remove_c_cdag {
   data.dets[block_index].complete_operation();
   data.update_sign();
   data.trace = new_trace;
+  
+  // update importance
+  data.importance[block_index] = new_importance;
+
 #ifdef EXT_DEBUG
   std::cerr << "* Configuration after: " << std::endl;
   std::cerr << config;

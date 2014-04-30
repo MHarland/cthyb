@@ -59,6 +59,7 @@ struct qmc_data {
  };
 
  std::vector<det_manip::det_manip<delta_block_adaptor>> dets; // The determinants
+ std::vector<double> importance;                              // Importance of configuration
  int current_sign, old_sign;                                  // Permutation prefactor
  trace_t trace;                                               // The current value of the trace
 
@@ -70,7 +71,8 @@ struct qmc_data {
       gf_block_structure(gf_block_structure),
       atomic_corr(config, sosp, p),
       current_sign(1),
-      old_sign(1) {
+      old_sign(1),
+      importance(delta.mesh().size(),1.0) {
   trace = atomic_corr.estimate();
   dets.clear();
   for (auto const &bl : delta.mesh()) dets.emplace_back(delta_block_adaptor(delta[bl]), 100);
