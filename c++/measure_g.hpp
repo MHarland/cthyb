@@ -22,6 +22,7 @@
 #include <triqs/gfs.hpp>
 #include "qmc_data.hpp"
 #include <boost/mpi/collectives.hpp>
+#include "triqs/statistics/histograms.hpp"
 
 namespace cthyb {
 
@@ -38,9 +39,12 @@ struct measure_g {
  mc_sign_type z;
  int64_t num;
  mc_sign_type average_sign;
+ triqs::statistics::histogram_segment_bin histo;
 
  measure_g(int a_level, gf_view<imtime> g_tau, qmc_data const& data)
-    : data(data), g_tau(g_tau), a_level(a_level), beta(data.config.beta()) {
+    : data(data), g_tau(g_tau), a_level(a_level), beta(data.config.beta()),
+    histo(0,g_tau.domain().beta,g_tau.mesh().size(),"histo_g_measurements_" + std::to_string(a_level) + ".dat")
+    {
   z = 0;
   num = 0;
  }
@@ -53,12 +57,15 @@ struct measure_g {
   auto corr = real(this->data.atomic_corr.full_trace_over_estimator());
   if (!std::isfinite(corr)) TRIQS_RUNTIME_ERROR << " measure g :corr not finite" << corr;
 
-  z += s * corr;
+  z += s * corr / data.importance[a_level];
 
   foreach(data.dets[a_level], [this, corr, s](std::pair<time_pt, int> const& x, std::pair<time_pt, int> const& y, double M) {
    // beta-periodicity is implicit in the argument, just fix the sign properly
    this->g_tau[closest_mesh_pt(double(y.first - x.first))](y.second, x.second) +=
        (y.first >= x.first ? real(s) : -real(s)) * M * corr / data.importance[a_level];
+
+   double delta_tau = double(y.first - x.first);
+   this->histo << delta_tau + (delta_tau>0 ? 0 : this->beta);
   });
  }
  // ---------------------------------------------
