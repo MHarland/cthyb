@@ -88,7 +88,6 @@ class move_remove_c_cdag {
   if (!std::isfinite(trace_ratio)) TRIQS_RUNTIME_ERROR << "trace_ratio not finite" << new_trace << "  "<< data.trace<<"  "<< new_trace /data.trace ;
  
   // Calculate importance
-  //new_importance = 1.0/(1.0 + det.size() - 1.0);
   new_importance = 1.0;
 
   auto importance_ratio = new_importance / data.importance[block_index];
