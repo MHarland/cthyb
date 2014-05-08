@@ -21,6 +21,7 @@
 #pragma once
 #include "./atomic_correlators_worker.hpp"
 #include "./gf_block_structure.hpp"
+#include "./importance.hpp"
 #include <triqs/gfs.hpp>
 #include <triqs/det_manip.hpp>
 #include <triqs/utility/serialization.hpp>
@@ -37,6 +38,7 @@ struct qmc_data {
  gf_block_structure_t const &gf_block_structure;
  sorted_spaces const &sosp;                     // Diagonalization of the atomic problem
  mutable atomic_correlators_worker atomic_corr; // Calculator of the trace
+ std::vector<importance> imp;                   // Importance functions for blocks
 
  using trace_t = atomic_correlators_worker::trace_t;
 
@@ -59,7 +61,6 @@ struct qmc_data {
  };
 
  std::vector<det_manip::det_manip<delta_block_adaptor>> dets; // The determinants
- std::vector<double> importance;                              // Importance of configuration
  int current_sign, old_sign;                                  // Permutation prefactor
  trace_t trace;                                               // The current value of the trace
 
@@ -71,11 +72,13 @@ struct qmc_data {
       gf_block_structure(gf_block_structure),
       atomic_corr(config, sosp, p),
       current_sign(1),
-      old_sign(1),
-      importance(delta.mesh().size(),1.0) {
+      old_sign(1){
   trace = atomic_corr.estimate();
   dets.clear();
-  for (auto const &bl : delta.mesh()) dets.emplace_back(delta_block_adaptor(delta[bl]), 100);
+  for (auto const &bl : delta.mesh()){
+   dets.emplace_back(delta_block_adaptor(delta[bl]), 100);
+   imp.emplace_back(delta[bl]);
+  }
  }
 
  qmc_data(qmc_data const &) = default;

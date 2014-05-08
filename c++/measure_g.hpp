@@ -57,12 +57,12 @@ struct measure_g {
   auto corr = real(this->data.atomic_corr.full_trace_over_estimator());
   if (!std::isfinite(corr)) TRIQS_RUNTIME_ERROR << " measure g :corr not finite" << corr;
 
-  z += s * corr / data.importance[a_level];
+  z += s * corr / data.imp[a_level]();
 
   foreach(data.dets[a_level], [this, corr, s](std::pair<time_pt, int> const& x, std::pair<time_pt, int> const& y, double M) {
    // beta-periodicity is implicit in the argument, just fix the sign properly
    this->g_tau[closest_mesh_pt(double(y.first - x.first))](y.second, x.second) +=
-       (y.first >= x.first ? real(s) : -real(s)) * M * corr / data.importance[a_level];
+       (y.first >= x.first ? real(s) : -real(s)) * M * corr / data.imp[a_level]();
 
    double delta_tau = double(y.first - x.first);
    this->histo << delta_tau + (delta_tau>0 ? 0 : this->beta);

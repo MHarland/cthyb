@@ -32,7 +32,6 @@ class move_remove_c_cdag {
  mc_tools::random_generator& rng;
  int block_index, block_size;
  qmc_data::trace_t new_trace;
- double new_importance;
  time_pt tau1, tau2;
 
  public:
@@ -71,6 +70,8 @@ class move_remove_c_cdag {
   tau1 = data.atomic_corr.soft_delete_n_th_operator(num_c, block_index, false);
   tau2 = data.atomic_corr.soft_delete_n_th_operator(num_c_dag, block_index, true);
 
+  std::pair<time_pt,int> x = det.get_x(num_c_dag), y = det.get_y(num_c);
+  
   auto det_ratio = det.try_remove(num_c_dag, num_c);
 
   // acceptance probability
@@ -87,12 +88,7 @@ class move_remove_c_cdag {
   auto trace_ratio = new_trace / data.trace;
   if (!std::isfinite(trace_ratio)) TRIQS_RUNTIME_ERROR << "trace_ratio not finite" << new_trace << "  "<< data.trace<<"  "<< new_trace /data.trace ;
  
-  // Calculate importance
-  new_importance = 1.0;
-
-  auto importance_ratio = new_importance / data.importance[block_index];
-  new_importance = data.importance[block_index] * importance_ratio;
-
+  auto importance_ratio = data.imp[block_index].try_remove(x,y);
   mc_weight_type p = importance_ratio * trace_ratio * det_ratio;
 
 #ifdef EXT_DEBUG
@@ -122,10 +118,8 @@ class move_remove_c_cdag {
   data.dets[block_index].complete_operation();
   data.update_sign();
   data.trace = new_trace;
+  data.imp[block_index].complete_operation();
   
-  // update importance
-  data.importance[block_index] = new_importance;
-
 #ifdef EXT_DEBUG
   std::cerr << "* Configuration after: " << std::endl;
   std::cerr << config;
