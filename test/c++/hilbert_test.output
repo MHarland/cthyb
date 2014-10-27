@@ -59,3 +59,8 @@ Part VIII: quartic operators
 old state is:  +(1)|9>
 operator is: 1*C^+(down,1)C^+(up,0)C(up,1)C(down,0)
 new state is:  +(1)|6>
+
+Part IX: state projection
+
+original state:  +(0.4)|6> +(0.3)|4> +(0.2)|2> +(0.1)|0>
+projected state:  +(0.3)|4> +(0.4)|6>

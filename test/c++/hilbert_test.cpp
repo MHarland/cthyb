@@ -134,7 +134,7 @@ int main() {
   std::cout << std::endl << "Part VIII: quartic operators" << std::endl << std::endl;
 
   {
-   fundamental_operator_set FOPS;
+  fundamental_operator_set FOPS;
   FOPS.insert("up",0);
   FOPS.insert("down",0);
   FOPS.insert("up",1);
@@ -150,6 +150,29 @@ int main() {
   std::cout << "old state is: " << st1 << std::endl;
   std::cout << "operator is: " << quartic_op << std::endl;
   std::cout << "new state is: " << imperative_operator<hilbert_space>(quartic_op,FOPS)(st1) << std::endl;
+  }
+
+  std::cout << std::endl << "Part IX: state projection" << std::endl << std::endl;
+  {
+  fundamental_operator_set fop;
+  for (int i=0; i<3; ++i) fop.insert("s",i);
+
+  hilbert_space hs_full(fop);
+  state<hilbert_space,double,true> st(hs_full);
+  st(0) = 0.1;
+  st(2) = 0.2;
+  st(4) = 0.3;
+  st(6) = 0.4;
+  std::cout << "original state: " << st << std::endl;
+
+  sub_hilbert_space hs(0);
+  hs.add_fock_state(hs_full.get_fock_state(4));
+  hs.add_fock_state(hs_full.get_fock_state(5));
+  hs.add_fock_state(hs_full.get_fock_state(6));
+  hs.add_fock_state(hs_full.get_fock_state(7));
+
+  auto proj_st = project<state<sub_hilbert_space,double,false>>(st,hs);
+  std::cout << "projected state: " << proj_st << std::endl;
   }
 
   return 0;

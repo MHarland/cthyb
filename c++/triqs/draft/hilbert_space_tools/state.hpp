@@ -56,6 +56,7 @@ class state<HilbertSpace, ScalarType, true> : boost::additive<state<HilbertSpace
 
  public:
  using value_type = ScalarType;
+ using hilbert_space_t = HilbertSpace;
 
  state() : hs(nullptr) {} // non valid state !
  state(HilbertSpace const& hs_) : hs(&hs_) {}
@@ -145,6 +146,7 @@ class state<HilbertSpace, ScalarType, false> : boost::additive<state<HilbertSpac
 
  public:
  using value_type = ScalarType;
+ using hilbert_space_t = HilbertSpace;
 
  state() : hs(nullptr) {}
  state(HilbertSpace const& hs_) : hs(&hs_), ampli(hs_.size(), 0.0) {}
@@ -220,5 +222,15 @@ std::ostream& operator<<(std::ostream& os, state<HilbertSpace, ScalarType, Based
  return os;
 }
 
+template<typename TargetState, typename OriginalState>
+TargetState project(OriginalState const& psi, typename TargetState::hilbert_space_t const& proj_hs) {
+ TargetState proj_psi(proj_hs);
+ auto const& hs = psi.get_hilbert();
+ foreach(psi,[&](int i, typename OriginalState::value_type v){
+  auto f = hs.get_fock_state(i);
+  if(proj_hs.has_state(f)) proj_psi(proj_hs.get_state_index(f)) = v;
+ });
+ return proj_psi;
+}
 
 }
