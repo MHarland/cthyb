@@ -44,6 +44,9 @@ class hilbert_space {
  // size of the hilbert space
  int size() const { return dim; }
 
+ // Check if a given fock state belongs to this space
+ bool has_state(fock_state_t f) const { return f < dim; }
+
  // find the index of a given fock state
  int get_state_index(fock_state_t f) const {
   if (f >= dim) TRIQS_RUNTIME_ERROR << "this index is too big";
@@ -86,6 +89,9 @@ class sub_hilbert_space {
 
  // find the index of a given state
  int get_state_index(fock_state_t f) const { return fock_to_index.find(f)->second; }
+
+ // Check if a given fock state belongs to this space
+ bool has_state(fock_state_t f) const { return fock_to_index.count(f) == 1; }
 
  // the state for a given index
  fock_state_t get_fock_state(int i) const { return fock_states[i]; }
