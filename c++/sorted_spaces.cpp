@@ -223,7 +223,7 @@ void sorted_spaces::slice_hilbert_space_with_qn(many_body_op_t const& h_, std::v
 
 // -------------------------------------------------------------------------------------------------
 
-std::pair<matrix<double>,int> sorted_spaces::make_op_matrix(imperative_operator<hilbert_space> const& op, int from_spn, int to_spn) {
+std::pair<matrix<double>,int> sorted_spaces::make_op_matrix(imperative_operator<hilbert_space> const& op, int from_spn, int to_spn) const {
 
  int nonzeros = 0;
  auto const& from_sp = sub_hilbert_spaces[from_spn];

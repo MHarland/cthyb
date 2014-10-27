@@ -28,6 +28,7 @@
 #include "move_remove.hpp"
 #include "measure_g.hpp"
 #include "measure_g_legendre.hpp"
+#include "measure_static.hpp"
 #include "measure_perturbation_hist.hpp"
 
 namespace cthyb {
@@ -161,6 +162,9 @@ void solver_core::solve(solve_parameters_t const & params) {
    for (size_t block = 0; block < _G_tau.domain().size(); ++block) {
     qmc.add_measure(measure_perturbation_hist(block, data, "histo_pert_order_" + g_names[block] + ".dat"), "Perturbation order (" + g_names[block] + ")");
    }
+  }
+  for(auto const& ob : params.static_observables){
+   qmc.add_measure(measure_static(ob.second, fops, sosp), "Static observable (" + ob.first + ")");
   }
 
   // Run! The empty configuration has sign = 1

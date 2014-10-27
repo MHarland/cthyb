@@ -79,7 +79,7 @@ class sorted_spaces {
  std::vector<eigensystem_t> const& get_eigensystems() const { return eigensystems; }
 
  // Create matrix of an operator acting from one subspace to another (returns matrix + number of its nonzero elements)
- std::pair<matrix<double>,int> make_op_matrix(imperative_operator<hilbert_space> const& op, int from_sp, int to_sp);
+ std::pair<matrix<double>,int> make_op_matrix(imperative_operator<hilbert_space> const& op, int from_sp, int to_sp) const;
 
  // (global) gs energy (i.e. min of all subspaces).
  double get_gs_energy() const { return gs_energy; }

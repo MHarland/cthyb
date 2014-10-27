@@ -49,6 +49,9 @@ struct solve_parameters_t {
  /// Make the analysis histograms of the trace computation
  bool make_histograms = false;
 
+ /// List of static observables to be measured (with their names)
+ std::map<std::string,real_operator_t> static_observables = std::map<std::string,real_operator_t>{};
+
  solve_parameters_t() {}
  
  solve_parameters_t(real_operator_t h_loc, int n_cycles) : h_loc(h_loc), n_cycles(n_cycles) {}
