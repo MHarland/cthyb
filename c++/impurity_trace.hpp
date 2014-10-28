@@ -116,6 +116,11 @@ class impurity_trace {
  std::pair<int, arrays::matrix<double>> compute_matrix(node n, int b);
  trace_t compute_trace(bool to_machine_precision, double p_yee, double u_yee);
 
+ // accessor to trace matrices, needed in measures of static quantities
+ std::vector<arrays::matrix<double>> const & get_trace_matrices() const {
+  return tree.get_root()->cache.matrices; 
+ }
+
  void update_cache_impl(node n);
  void update_dtau(node n);
 
