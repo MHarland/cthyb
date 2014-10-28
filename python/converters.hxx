@@ -1,6 +1,6 @@
 // DO NOT EDIT
 // Generated automatically using libclang using the command : 
-// wrapper_desc_generator.py ../c++/solver_core.hpp -p -mpytriqs.applications.impurity_solvers.cthyb -o cthyb --moduledoc "The cthyb matrix solver"
+// wrapper_desc_generator.py ../c++/solver_core.hpp -p -mpytriqs.applications.impurity_solvers.cthyb -o cthyb --moduledoc "The cthyb solver"
 
 
 // --- C++ Python converter for solve_parameters_t

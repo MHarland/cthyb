@@ -42,6 +42,7 @@ class solver_core {
  block_gf<imfreq> _G0_iw;                  // Green's function containers: imaginary-freq Green's functions
  block_gf<imtime> _Delta_tau, _G_tau;      // Green's function containers: imaginary-time Green's functions
  block_gf<legendre> _G_l;                  // Green's function containers: Legendre coefficients
+ std::map<std::string,double> _static_observables;   // Measured time-independent observables
  boost::mpi::communicator _comm;           // define the communicator, here MPI_COMM_WORLD
 
  public:
@@ -68,6 +69,10 @@ class solver_core {
  // Legendre measurements
  /// G_l in Legendre polynomials representation
  block_gf_view<legendre> G_l() { return _G_l; }
+
+ // Static observables
+ /// Accumulated static observable with a given name
+ std::map<std::string,double> const& static_observables() const { return _static_observables; }
 
  // Atomic GF (without hybridization)
  /// Atomic G(tau) in imaginary time

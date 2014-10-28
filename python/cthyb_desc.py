@@ -1,10 +1,10 @@
 
 # Generated automatically using the command : 
-# wrapper_desc_generator.py ../c++/solver_core.hpp -p -mpytriqs.applications.impurity_solvers.cthyb -o cthyb --moduledoc "The cthyb matrix solver"
+# wrapper_desc_generator.py ../c++/solver_core.hpp -p -mpytriqs.applications.impurity_solvers.cthyb -o cthyb --moduledoc "The cthyb solver"
 from wrap_generator import *
 
 # The module
-module = module_(full_name = "pytriqs.applications.impurity_solvers.cthyb", doc = "The cthyb matrix solver")
+module = module_(full_name = "pytriqs.applications.impurity_solvers.cthyb", doc = "The cthyb solver")
 
 # All the triqs C++/Python modules
 module.use_module('gf')
@@ -64,6 +64,10 @@ c.add_property(name = "G_tau",
 c.add_property(name = "G_l", 
                getter = cfunction("block_gf_view<legendre> G_l ()"),
                doc = """G_l in Legendre polynomials representation """)
+
+c.add_property(name = "static_observables",
+               getter = cfunction("std::map<std::string,double> static_observables ()"),
+               doc = """Accumulated static observable with a given name """)
 
 c.add_property(name = "atomic_gf", 
                getter = cfunction("block_gf_view<imtime> atomic_gf ()"),

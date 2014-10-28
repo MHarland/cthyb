@@ -164,7 +164,8 @@ void solver_core::solve(solve_parameters_t const & params) {
    }
   }
   for(auto const& ob : params.static_observables){
-   qmc.add_measure(measure_static(ob.second, fops, sosp), "Static observable (" + ob.first + ")");
+   auto it = _static_observables.emplace(ob.first,0);
+   qmc.add_measure(measure_static(ob.second, it.first->second, data, fops), "Static observable (" + ob.first + ")");
   }
 
   // Run! The empty configuration has sign = 1

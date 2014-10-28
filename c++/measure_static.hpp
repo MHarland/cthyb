@@ -38,25 +38,47 @@ using real_operator_t = many_body_operator<double>;
 struct measure_static {
  using mc_sign_type = std::complex<double>;
 
- double value;
+ qmc_data const& data;
+ double & result;
  std::vector<std::pair<long,matrix<double>>> matrix_elements;   // pairs (subspace number,matrix elements)
+ mc_sign_type z;
+ int64_t num;
 
- measure_static(real_operator_t const& observable, fundamental_operator_set const& fops, sorted_spaces const& sosp)
+ measure_static(real_operator_t const& observable, double & result,
+                qmc_data const& data, fundamental_operator_set const& fops) :
+ result(result), data(data), z(0), num(0)
  {
-  matrix_elements.reserve(sosp.n_subspaces());
+  matrix_elements.reserve(data.sosp.n_subspaces());
   imperative_operator<hilbert_space> op(observable,fops);
 
   // Iterate over all subspaces;
-  for(long spn = 0; spn < sosp.n_subspaces(); ++spn){
-    auto M = sosp.make_op_matrix(op,spn,spn);
-    if(M.second>0) matrix_elements.emplace_back(spn,M.first);
+  for(long spn = 0; spn < data.sosp.n_subspaces(); ++spn){
+    auto M = data.sosp.make_op_matrix(op,spn,spn);
+    if(M.second>0) matrix_elements.emplace_back(spn,M.first); // At least one non-zero element in this subspace
   }
  }
 
  void accumulate(mc_sign_type s) {
+
+  num += 1;
+  if (num < 0) TRIQS_RUNTIME_ERROR << " Overflow of counter ";
+
+  auto corr = real(data.imp_trace.full_trace_over_estimator());
+  if (!std::isfinite(corr)) TRIQS_RUNTIME_ERROR << " measure g :corr not finite" << corr;
+
+  z += s * corr;
+
+  // TODO
  }
 
  void collect_results(boost::mpi::communicator const& c) {
+
+  int64_t total_num;
+  mc_sign_type total_z;
+  boost::mpi::all_reduce(c, z, total_z, std::c14::plus<>());
+  boost::mpi::all_reduce(c, num, total_num, std::c14::plus<>());
+
+  // TODO
  }
 
 };
