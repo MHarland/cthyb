@@ -32,7 +32,6 @@
 namespace cthyb {
 
 using triqs::arrays::matrix;
-using real_operator_t = many_body_operator<double>;
 
 // Measure a static observable
 struct measure_static {
@@ -44,7 +43,7 @@ struct measure_static {
  mc_sign_type z;
  int64_t num;
 
- measure_static(real_operator_t const& observable, double & result,
+ measure_static(triqs::utility::many_body_operator<double> const& observable, double & result,
                 qmc_data const& data, fundamental_operator_set const& fops) :
  result(result), data(data), z(0), num(0)
  {
