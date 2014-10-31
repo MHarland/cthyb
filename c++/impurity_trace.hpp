@@ -129,6 +129,10 @@ class impurity_trace {
 
  // ---------- Accessors to cache quantities ----------
  public:
+ // accessor to block_table
+ std::vector<int> const & get_block_table() const {
+  return tree.get_root()->cache.block_table; 
+ }
  // accessor to trace matrices, needed in measures of static quantities
  std::vector<arrays::matrix<double>> const & get_trace_matrices() const {
   return tree.get_root()->cache.matrices; 

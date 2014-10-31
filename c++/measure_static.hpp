@@ -71,7 +71,8 @@ struct measure_static {
   double numerator(0), denominator(0);
 
   for(auto const& M : observable_matrices){
-   auto const& trace_matrix = data.imp_trace.get_trace_matrices()[M.first];
+   auto const& block_map = data.imp_trace.get_block_table()[M.first];
+   auto const& trace_matrix = data.imp_trace.get_trace_matrices()[block_map];
 
    auto prod_matrix = trace_matrix * M.second;
    for(int n = 0; n < first_dim(trace_matrix); ++n){
