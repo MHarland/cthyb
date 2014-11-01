@@ -51,7 +51,7 @@ template <> struct py_converter<solve_parameters_t> {
   _get_optional(dic, "measure_g_l"        , res.measure_g_l          , false);
   _get_optional(dic, "measure_pert_order" , res.measure_pert_order   , false);
   _get_optional(dic, "make_histograms"    , res.make_histograms      , false);
-  _get_optional(dic, "static_observables" , res.static_observables   , std::map<std::string,real_operator_t>{});
+  _get_optional(dic, "static_observables" , res.static_observables   , (std::map<std::string,real_operator_t>{}));
   return res;
  }
 

@@ -50,7 +50,7 @@ struct solve_parameters_t {
  bool make_histograms = false;
 
  /// List of static observables to be measured (with their names)
- std::map<std::string,real_operator_t> static_observables = std::map<std::string,real_operator_t>{};
+ std::map<std::string,real_operator_t> static_observables = (std::map<std::string,real_operator_t>{});
 
  solve_parameters_t() {}
  

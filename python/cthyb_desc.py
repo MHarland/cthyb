@@ -27,7 +27,7 @@ c = class_(
         c_type = "solver_core",   # name of the C++ class
 )
 
-c.add_constructor("""(double beta, std::map<std::string,std::vector<int>> gf_struct, int n_iw = 1025, int n_tau = 10001, int n_l = 50)""", 
+c.add_constructor("""(double beta, std::map<std::string,std::vector<int>> gf_struct, int n_iw = 1025, int n_tau = 10001, int n_l = 50)""",
                   doc = """ """)
 
 c.add_method("""void solve (**cthyb::solve_parameters_t)""", 
@@ -47,7 +47,7 @@ c.add_method("""void solve (**cthyb::solve_parameters_t)""",
   measure_g_l         bool                                   false                                          Whether to measure G_l (Legendre)
   measure_pert_order  bool                                   false                                          Whether to measure perturbation order
   make_histograms     bool                                   false                                          Make the analysis histograms of the trace computation
-  static_observables  std::map<std::string, real_operator_t> std::map<std::string,real_operator_t>{}        List of static observables to be measured (with their names) """)
+  static_observables  std::map<std::string, real_operator_t> (std::map<std::string,real_operator_t>{})      List of static observables to be measured (with their names) """)
 
 c.add_property(name = "G0_iw", 
                getter = cfunction("block_gf_view<imfreq> G0_iw ()"),
