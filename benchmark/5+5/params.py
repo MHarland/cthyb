@@ -32,11 +32,11 @@ Delta_dump = "Delta_params.txt"
 # Delta(\tau) is diagonal in the basis of cubic harmonics
 # Each component of Delta(\tau) is represented as a list of single-particle
 # terms parametrized by pairs (V_k,\epsilon_k).
-delta_params={"xy" : {'V':0.2,'e':-0.2},
-              "yz" : {'V':0.2,'e':-0.15},
-              "z^2" : {'V':0.2,'e':-0.1},
-              "xz" : {'V':0.2,'e':0.05},
-              "x^2-y^2" : {'V':0.2,'e':0.4}}
+delta_params={"xy" : {'V':0.5,'e':-0.2},
+              "yz" : {'V':0.5,'e':-0.15},
+              "z^2" : {'V':0.5,'e':-0.1},
+              "xz" : {'V':0.5,'e':0.05},
+              "x^2-y^2" : {'V':0.5,'e':0.4}}
 
 atomic_levels = {('up_xy',0) :        -0.2,
                  ('dn_xy',0) :        -0.2,
@@ -55,11 +55,11 @@ n_tau = 10001
 p = {}
 p["max_time"] = -1
 p["random_name"] = ""
-p["random_seed"] = 123 * mpi.rank + 567
+p["random_seed"] = 123 * 739 + 567
 p["verbosity"] = 3
 p["length_cycle"] = 50
-p["n_warmup_cycles"] = 1000
-p["n_cycles"] = 30000
+p["n_warmup_cycles"] = 50000
+p["n_cycles"] = 7500000
 p["partition_method"] = "autopartition"
 p["measure_g_tau"] = True
 p["measure_pert_order"] = False
