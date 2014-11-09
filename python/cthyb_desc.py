@@ -74,6 +74,10 @@ c.add_property(name = "atomic_gf",
                getter = cfunction("block_gf_view<imtime> atomic_gf ()"),
                doc = """Atomic G(tau) in imaginary time """)
 
+c.add_property(name = "average_sign", 
+               getter = cfunction("double average_sign ()"),
+               doc = """Monte Carlo average sign""")
+
 module.add_class(c)
 
 module.add_function ("gf<imtime> change_mesh (gf_view<imtime> old_gf, int new_n_tau)", doc = "")
