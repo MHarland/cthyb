@@ -77,6 +77,8 @@ c.add_method("""void solve (**cthyb::solve_parameters_t)""",
 +------------------------+-------------------------------------+-------------------------------+--------------------------------------------------------------------------------------------------------+
 | measure_density_matrix | bool                                | false                         | Measure the reduced impurity density matrix?                                                           |
 +------------------------+-------------------------------------+-------------------------------+--------------------------------------------------------------------------------------------------------+
+| measure_g_qp_tau       | bool                                | false                         | Measure quasiparticle G(tau)?                                                                          |
++------------------------+-------------------------------------+-------------------------------+--------------------------------------------------------------------------------------------------------+
 | use_norm_as_weight     | bool                                | false                         | Use the norm of the density matrix in the weight if true, otherwise use Trace                          |
 +------------------------+-------------------------------------+-------------------------------+--------------------------------------------------------------------------------------------------------+
 | performance_analysis   | bool                                | false                         | Analyse performance of trace computation with histograms (developers only)?                            |
@@ -121,6 +123,9 @@ c.add_property(name = "atomic_gf",
 c.add_property(name = "density_matrix",
                getter = cfunction("std::vector<matrix_t> density_matrix ()"),
                doc = """Accumulated density matrix. """)
+
+c.add_method("""block_gf_view<imtime> get_G_qp_tau(int i)""",
+             doc = """Accumulated quasiparticle i :math:`G(\\tau)` in imaginary time. """)
 
 c.add_property(name = "h_loc_diagonalization",
                getter = cfunction("cthyb::atom_diag h_loc_diagonalization ()"),

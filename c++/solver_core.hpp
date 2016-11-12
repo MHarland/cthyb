@@ -43,6 +43,7 @@ class solver_core {
  many_body_op_t _h_loc;                         // The local Hamiltonian = h_int + h0
  block_gf<imfreq> _G0_iw;                       // Green's function containers: imaginary-freq Green's functions
  block_gf<imtime> _Delta_tau, _G_tau;           // Green's function containers: imaginary-time Green's functions
+ std::vector<block_gf<imtime>> _G_qp_tau;       // Quasiparticle Green's function container
  block_gf<imtime, g_target_t> _G_tau_accum;     // Intermediate object to accumulate g(tau), either real or complex
  block_gf<legendre> _G_l;                       // Green's function containers: Legendre coefficients
  histogram _pert_order_total;                   // Histogram of the total perturbation order
@@ -79,6 +80,12 @@ class solver_core {
  /// Accumulated :math:`G_l` in Legendre polynomials representation.
  block_gf_view<legendre> G_l() { return _G_l; }
 
+ /// Accumulated :math:`G(\tau)` of quasiparticles in imaginary time.
+ block_gf_view<imtime> get_G_qp_tau(int i) {
+   if (i >= _G_qp_tau.size()) {TRIQS_RUNTIME_ERROR << "state index i out of range";}
+   return _G_qp_tau[i];
+ }
+  
  /// Atomic :math:`G(\tau)` in imaginary time.
  block_gf_view<imtime> atomic_gf() const { return ::cthyb::atomic_gf(h_diag, beta, gf_struct, _G_tau[0].mesh().size()); }
 

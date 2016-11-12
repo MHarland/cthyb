@@ -36,6 +36,7 @@ class Solver(SolverCore):
         self.gf_struct = gf_struct
         self.n_iw = n_iw
         self.n_tau = n_tau
+        self.G_qp_tau = None
 
     def solve(self, **params_kw):
         """
@@ -104,5 +105,11 @@ class Solver(SolverCore):
             if perform_tail_fit: tail_fit(Sigma_iw=self.Sigma_iw,G0_iw=self.G0_iw,G_iw=self.G_iw,\
                                           fit_min_n=fit_min_n,fit_max_n=fit_max_n,fit_min_w=fit_min_w,fit_max_w=fit_max_w,\
                                           fit_max_moment=fit_max_moment,fit_known_moments=fit_known_moments)
+
+        if self.last_solve_parameters["measure_g_qp_tau"] == True:
+            n_qp = self.h_loc_diagonalization.full_hilbert_space_dim
+            self.G_qp_tau = np.empty([n_qp], dtype = BlockGf)
+            for i_qp in range(n_qp):
+                self.G_qp_tau[i_qp] = self.get_G_qp_tau(i_qp)
 
         return solve_status

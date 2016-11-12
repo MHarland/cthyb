@@ -37,6 +37,7 @@
 #include "measure_perturbation_hist.hpp"
 #include "measure_density_matrix.hpp"
 #include "measure_average_sign.hpp"
+#include "measure_g_qp_tau.hpp"
 
 namespace cthyb {
 
@@ -57,6 +58,7 @@ solver_core::solver_core(double beta_, std::map<std::string, indices_type> const
   std::vector<gf<legendre>> g_l_blocks;
   std::vector<gf<imtime>> delta_tau_blocks;
   std::vector<gf<imtime, delta_target_t>> g_tau_accum_blocks; //  Local real or complex (if complex mode) quantities for accumulation
+  
 
   for (auto const& bl : gf_struct) {
     block_names.push_back(bl.first);
@@ -278,9 +280,13 @@ void solver_core::solve(solve_parameters_t const & params) {
    if (!params.use_norm_as_weight)
     TRIQS_RUNTIME_ERROR << "To measure the density_matrix of atomic states, you need to set "
                            "use_norm_as_weight to True, i.e. to reweight the QMC";
-   qmc.add_measure(measure_density_matrix{data, _density_matrix}, "Density Matrix for local static observable");
+    qmc.add_measure(measure_density_matrix{data, _density_matrix}, "Density Matrix for local static observable");
   }
-
+  if (params.measure_g_qp_tau) {
+    if (!params.measure_density_matrix)
+      TRIQS_RUNTIME_ERROR << "To measure the quasiparticle Greens function, you need to set measure_density_matrix to True";
+    qmc.add_measure(measure_g_qp_tau(_G_qp_tau, data, _G_tau, _density_matrix), "Quasiparticle G measurement");
+  }
   qmc.add_measure(measure_average_sign{data, _average_sign}, "Average sign");
 
   // Run! The empty (starting) configuration has sign = 1
