@@ -80,10 +80,8 @@ struct measure_g_qp_tau {
     for (size_t i_subspace = 0; i_subspace < density_matrix.size(); ++i_subspace) {
       for (size_t i_state = 0; i_state < density_matrix[i_subspace].shape()[0]; ++i_state) {
 	int i_qp = data.h_diag.flatten_block_index(i_subspace, i_state);
-	for (auto& g_i: g_qp_tau) {
-	  for (auto& g_i_block: g_i) {
-	    g_i_block.singularity()(1) = density_matrix[i_subspace](i_state,i_state);
-	  }
+	for (auto& g_block: g_qp_tau[i_qp]) {
+	  g_block.singularity()(1) = density_matrix[i_subspace](i_state,i_state);
 	}
       }
     }
