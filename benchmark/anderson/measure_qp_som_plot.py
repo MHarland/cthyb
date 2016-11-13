@@ -14,8 +14,7 @@ arch_som = arch['som']
 for i_qp, qp in arch_som.items():
     g_w = qp['g_w']
     oplot(g_w, name=i_qp, mode = 'S')
-g_w = arch_som['tot']['g_w']
-oplot(g_w * .5, name=i_qp, mode = 'S')
 plt.gca().set_ylim(bottom = 0)
+plt.gca().legend(fontsize = 10)
 pp.savefig(plt.gcf())
 pp.close()
