@@ -37,7 +37,7 @@ struct measure_g_qp_tau {
   double beta;
   block_gf<imtime> g_tmp;
   std::vector<matrix_t> const& density_matrix;
-  int i_qp;
+  size_t i_qp;
 
   measure_g_qp_tau(std::vector<block_gf<imtime>>& g_qp_tau, qmc_data const& data,
 		   block_gf<imtime> const& g_tau, std::vector<matrix_t> const& density_matrix)
@@ -53,16 +53,18 @@ struct measure_g_qp_tau {
     num += 1;
     if (num < 0) TRIQS_RUNTIME_ERROR << " Overflow of counter ";
     data.imp_trace.compute();
-    s *= data.atomic_reweighting;
-    z += s;
+    z += s * data.atomic_reweighting;
+    s /= data.atomic_weight;
     g_tmp() = 0.0;
     for (int i_block = 0; i_block < n_g_blocks; ++i_block) {
       foreach(data.dets[i_block], [i_block, s, this](std::pair<time_pt, int> const& x, std::pair<time_pt, int> const& y, det_scalar_t M) {
 	  this->g_tmp[i_block][closest_mesh_pt(double(y.first - x.first))](y.second, x.second) += (y.first >= x.first ? s : -s) * M;});
       for (size_t i_subspace = 0; i_subspace < density_matrix.size(); ++i_subspace) {
-	for (size_t i_state = 0; i_state < density_matrix[i_subspace].shape()[0]; ++i_state) {
-	  i_qp = data.h_diag.flatten_block_index(i_subspace, i_state);
-	  g_qp_tau[i_qp][i_block] += g_tmp[i_block] * data.imp_trace.get_density_matrix()[i_subspace].mat(i_state, i_state);
+	if (data.imp_trace.get_density_matrix()[i_subspace].is_valid) {
+	  for (size_t i_state = 0; i_state < density_matrix[i_subspace].shape()[0]; ++i_state) {
+	    i_qp = data.h_diag.flatten_block_index(i_subspace, i_state);
+	    g_qp_tau[i_qp][i_block] += g_tmp[i_block] * data.imp_trace.get_density_matrix()[i_subspace].mat(i_state, i_state);
+	  }
 	}
       }
     }
