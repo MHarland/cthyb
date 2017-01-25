@@ -76,8 +76,8 @@ struct solve_parameters_t {
  /// Analyse performance of trace computation with histograms (developers only)?
  bool performance_analysis = false;
 
- /// Measure quasiparticle G(tau)?
- bool measure_g_qp_tau = false;
+ /// Measure pseudoparticle G(tau)?
+ bool measure_g_pp_tau = false;
 
  /// Operator insertion/removal probabilities for different blocks
  /// type: dict(str:float)

@@ -26,10 +26,10 @@ namespace cthyb {
 using namespace triqs::gfs;
 
 
-struct measure_g_qp_tau {
+struct measure_g_pp_tau {
 
   qmc_data const& data;
-  std::vector<block_gf<imtime>>& g_qp_tau;
+  std::vector<block_gf<imtime>>& g_pp_tau;
   mc_weight_t z;
   int64_t num;
   mc_weight_t average_sign;
@@ -37,16 +37,16 @@ struct measure_g_qp_tau {
   double beta;
   block_gf<imtime> g_tmp;
   std::vector<matrix_t> const& density_matrix;
-  size_t i_qp;
+  size_t i_pp;
 
-  measure_g_qp_tau(std::vector<block_gf<imtime>>& g_qp_tau, qmc_data const& data,
+  measure_g_pp_tau(std::vector<block_gf<imtime>>& g_pp_tau, qmc_data const& data,
 		   block_gf<imtime> const& g_tau, std::vector<matrix_t> const& density_matrix)
-    : g_qp_tau(g_qp_tau), data(data), g_tmp(g_tau), density_matrix(density_matrix) {
-    g_qp_tau.resize(data.h_diag.get_full_hilbert_space_dim(), g_tau);
-    for (auto& g_i: g_qp_tau) g_i() = 0.0;
+    : g_pp_tau(g_pp_tau), data(data), g_tmp(g_tau), density_matrix(density_matrix) {
+    g_pp_tau.resize(data.h_diag.get_full_hilbert_space_dim(), g_tau);
+    for (auto& g_i: g_pp_tau) g_i() = 0.0;
     z = 0;
     num = 0;
-    n_g_blocks = n_blocks(g_qp_tau[0]);
+    n_g_blocks = n_blocks(g_pp_tau[0]);
   }
 
   void accumulate(mc_weight_t s) {
@@ -62,8 +62,8 @@ struct measure_g_qp_tau {
       for (size_t i_subspace = 0; i_subspace < density_matrix.size(); ++i_subspace) {
 	if (data.imp_trace.get_density_matrix()[i_subspace].is_valid) {
 	  for (size_t i_state = 0; i_state < density_matrix[i_subspace].shape()[0]; ++i_state) {
-	    i_qp = data.h_diag.flatten_block_index(i_subspace, i_state);
-	    g_qp_tau[i_qp][i_block] += g_tmp[i_block] * data.imp_trace.get_density_matrix()[i_subspace].mat(i_state, i_state);
+	    i_pp = data.h_diag.flatten_block_index(i_subspace, i_state);
+	    g_pp_tau[i_pp][i_block] += g_tmp[i_block] * data.imp_trace.get_density_matrix()[i_subspace].mat(i_state, i_state);
 	  }
 	}
       }
@@ -72,7 +72,7 @@ struct measure_g_qp_tau {
 
   void collect_results(triqs::mpi::communicator const& c) {
     z = mpi_all_reduce(z,c);
-    for (auto& g_i: g_qp_tau) {
+    for (auto& g_i: g_pp_tau) {
       for (auto& g_i_block: g_i) {
 	g_i_block[0] = g_i_block[0] * 2;// Multiply first and last bins by 2 to account for full bins
 	g_i_block[g_i_block.mesh().size() - 1] = g_i_block[g_i_block.mesh().size() - 1] * 2;
@@ -82,8 +82,8 @@ struct measure_g_qp_tau {
     }
     for (size_t i_subspace = 0; i_subspace < density_matrix.size(); ++i_subspace) {
       for (size_t i_state = 0; i_state < density_matrix[i_subspace].shape()[0]; ++i_state) {
-	int i_qp = data.h_diag.flatten_block_index(i_subspace, i_state);
-	for (auto& g_block: g_qp_tau[i_qp]) {
+	int i_pp = data.h_diag.flatten_block_index(i_subspace, i_state);
+	for (auto& g_block: g_pp_tau[i_pp]) {
 	  g_block.singularity()(1) = density_matrix[i_subspace](i_state, i_state);
 	}
       }

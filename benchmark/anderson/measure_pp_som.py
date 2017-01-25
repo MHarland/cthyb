@@ -7,20 +7,20 @@ from triqs_som.som import Som
 import numpy as np
 
 
-npts = 500
+npts = 100
 run_params = {}
 run_params['energy_window'] = (-3, 3)
 run_params['max_time'] = -1
 run_params['verbosity'] = 2
 run_params['t'] = 1000
-run_params['f'] = 100
-run_params['adjust_f'] = True
-run_params['l'] = 200
+run_params['f'] = 50
+run_params['adjust_f'] = False
+run_params['l'] = 100
 run_params['adjust_l'] = False
-run_params['make_histograms'] = True
+run_params['make_histograms'] = False
 run_params['hist_max'] = 2
 run_params['hist_n_bins'] = 100
-archive_name = "measure_qp.h5"
+archive_name = "measure_pp.h5"
 
 def trace(g, tr_g):
     tr_g.zero()
@@ -42,16 +42,16 @@ def som(g, npts, run_params):
     gw << som
     return tr_g, g_rec, gw, s
 
-n_qp = None
+n_pp = None
 if mpi.is_master_node():
     archive = HDFArchive(archive_name, 'a')
-    n_qp = len([key for key in archive['G_qp_tau'].keys()])
-n_qp = mpi.bcast(n_qp)
+    n_pp = len([key for key in archive['G_pp_tau'].keys()])
+n_pp = mpi.bcast(n_pp)
 
-for i in range(n_qp):
+for i in range(n_pp):
     g = None
     if mpi.is_master_node():
-        g = archive['G_qp_tau'][str(i)]
+        g = archive['G_pp_tau'][str(i)]
     g = mpi.bcast(g)
     tr_g, g_rec, gw, s = som(g, npts, run_params)
     if mpi.is_master_node():
@@ -65,7 +65,7 @@ for i in range(n_qp):
         res['g_rec'] = g_rec
         res['g_w'] = gw
         res['s'] = s
-        res['histograms'] = som.histograms
+        #res['histograms'] = som.histograms
         res['parameters'] = run_params
 
 g = None
@@ -82,5 +82,5 @@ if mpi.is_master_node():
     res['g_rec'] = g_rec
     res['g_w'] = gw
     res['s'] = s
-    res['histograms'] = som.histograms
+    #res['histograms'] = som.histograms
     res['parameters'] = run_params

@@ -37,7 +37,7 @@
 #include "measure_perturbation_hist.hpp"
 #include "measure_density_matrix.hpp"
 #include "measure_average_sign.hpp"
-#include "measure_g_qp_tau.hpp"
+#include "measure_g_pp_tau.hpp"
 
 namespace cthyb {
 
@@ -282,10 +282,10 @@ void solver_core::solve(solve_parameters_t const & params) {
                            "use_norm_as_weight to True, i.e. to reweight the QMC";
     qmc.add_measure(measure_density_matrix{data, _density_matrix}, "Density Matrix for local static observable");
   }
-  if (params.measure_g_qp_tau) {
+  if (params.measure_g_pp_tau) {
     if (!params.measure_density_matrix)
-      TRIQS_RUNTIME_ERROR << "To measure the quasiparticle Greens function, you need to set measure_density_matrix to True";
-    qmc.add_measure(measure_g_qp_tau(_G_qp_tau, data, _G_tau, _density_matrix), "Quasiparticle G measurement");
+      TRIQS_RUNTIME_ERROR << "To measure the pseudoparticle Greens function, you need to set measure_density_matrix to True";
+    qmc.add_measure(measure_g_pp_tau(_G_pp_tau, data, _G_tau, _density_matrix), "Pseudoparticle G measurement");
   }
   qmc.add_measure(measure_average_sign{data, _average_sign}, "Average sign");
 
